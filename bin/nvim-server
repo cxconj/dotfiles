@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Neovim headless server launcher
+# Usage: nvim-server [SOCKET_PATH]
+
+DEFAULT_SOCKET="./nvim.sock"
+
+# Get socket path from first argument or use default
+SOCKET="${1:-$DEFAULT_SOCKET}"
+
+# Display usage if help is requested
+if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
+    echo "Usage: nvim-server [SOCKET_PATH]"
+    echo ""
+    echo "Start Neovim in headless mode listening on a Unix socket"
+    echo ""
+    echo "Arguments:"
+    echo "  SOCKET_PATH    Unix socket path to listen on (default: $DEFAULT_SOCKET)"
+    echo ""
+    echo "Examples:"
+    echo "  nvim-server                    # Start on $DEFAULT_SOCKET"
+    echo "  nvim-server /tmp/my-nvim.sock  # Start on /tmp/my-nvim.sock"
+    exit 0
+fi
+
+# Remove stale socket if it exists
+if [[ -S "$SOCKET" ]]; then
+    echo "Removing stale socket: $SOCKET"
+    rm -f "$SOCKET"
+fi
+
+# Start Neovim in headless mode with auto-restart
+echo "Starting Neovim server on $SOCKET"
+echo "Server will automatically restart if it crashes"
+echo "Press Ctrl+C to stop the server"
+echo ""
+
+cleanup() {
+    rm -f "$SOCKET"
+    exit 0
+}
+trap cleanup INT TERM
+
+while true; do
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting Neovim..."
+    nvim --headless --listen "$SOCKET"
+    EXIT_CODE=$?
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Neovim exited with code $EXIT_CODE"
+    rm -f "$SOCKET"
+    sleep 0.1
+done

@@ -1,0 +1,7 @@
+compose-files
+memo.*
+.nvim.lua
+nvim.sock
+*debug_bin*
+
+Makefile.local

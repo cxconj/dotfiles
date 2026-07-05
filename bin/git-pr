@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# 引数チェック
+if [ -z "$1" ]; then
+    echo "使用法: ./git-pr-wt.sh <PR番号>"
+    exit 1
+fi
+
+PR_ID=$1
+BRANCH_NAME="pr-$PR_ID"
+TARGET_DIR=".claude/worktrees/$BRANCH_NAME"
+
+# 1. GitHubからPRを取得 (既存ブランチがある場合は上書き)
+echo "--- Fetching PR #$PR_ID ---"
+git fetch origin pull/"$PR_ID"/head:"$BRANCH_NAME" --force
+
+# 2. ワークツリーを作成
+echo "--- Creating Worktree in $TARGET_DIR ---"
+
+# 親ディレクトリがない場合は作成
+mkdir -p .claude/worktrees
+
+if [ -d "$TARGET_DIR" ]; then
+    echo "エラー: 既にディレクトリ '$TARGET_DIR' が存在します。"
+    exit 1
+fi
+
+git worktree add "$TARGET_DIR" "$BRANCH_NAME"
+
+echo "--- Done! ---"
+echo "Location: $TARGET_DIR"
