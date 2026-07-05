@@ -9,13 +9,3 @@ https://docs.docker.com/engine/install/linux-postinstall/
 devpod context set-options default -o SSH_INJECT_GIT_CREDENTIALS=false
 devpod context set-options default -o GIT_SSH_SIGNATURE_FORWARDING=false
 ```
-
-# agent skills
-
-This repository manages shared agent skills under `skills/`. `install.sh` links these skills into `~/.agents/skills`, which is used by Claude Code and Codex.
-
-Available skills:
-
-- `jr`
-- `ta-reviewer`
-- `tta-reviewer`
