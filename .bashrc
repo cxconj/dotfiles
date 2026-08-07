@@ -170,3 +170,5 @@ claude_run() {
     command claude "$@"
 }
 alias claude='claude_run'
+
+export PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"'
