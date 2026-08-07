@@ -139,8 +139,7 @@ if [[ -n $(which wsl.exe) ]]; then
   source $HOME/.keychain/$(hostname)-sh
 
   alias saml2aws=saml2aws.exe
-else # devcontainer 内での設定
-  . $HOME/.bash-powerline.sh
+  export PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"'
 fi
 
 eval "$(direnv hook bash)"
@@ -170,5 +169,3 @@ claude_run() {
     command claude "$@"
 }
 alias claude='claude_run'
-
-export PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"'
