@@ -56,10 +56,18 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+# show current git branch in prompt
+if [ -f /usr/lib/git-core/git-sh-prompt ]; then
+    . /usr/lib/git-core/git-sh-prompt
+fi
+if ! type __git_ps1 >/dev/null 2>&1; then
+    __git_ps1() { :; }
+fi
+
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;33m\]$(__git_ps1 " (%s)")\[\033[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(__git_ps1 " (%s)")\$ '
 fi
 unset color_prompt force_color_prompt
 
@@ -169,3 +177,4 @@ claude_run() {
     command claude "$@"
 }
 alias claude='claude_run'
+eval "$(~/.local/bin/mise activate)"
